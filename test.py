@@ -1,6 +1,6 @@
 from simpn.simulator import SimProblem, SimToken
 from random import expovariate as exp
-from simpn.reporters import EventLogReporter
+from custom_reporters import EnhancedEventLogReporter  # Import the new reporter
 import simpn.prototypes as prototype
 import json
 from rework import setup_rework, setup_long_rework
@@ -90,7 +90,7 @@ with open('config.json', 'r') as f:
 #setup_rework(shop, config)        # Self-loop rework
 #setup_long_rework(shop, config)   # Long rework
 
-# Run the simulation
-reporter = EventLogReporter("output.csv")
-shop.simulate(24*60, reporter)  # 96 hours in minutes
+# Run the simulation with the enhanced reporter
+reporter = EnhancedEventLogReporter("output.csv", config=config)
+shop.simulate(24*60*10, reporter)  # 96 hours in minutes
 reporter.close()

@@ -13,5 +13,19 @@
       "max_iteration": 1,
       "probability": 0.2
     }
-  ]
+  ],
+  "case_attributes": {
+    "requestedAmount": {
+      "type": "numerical",
+      "min": 1000,
+      "max": 10000
+    },
+    "loanType": {
+      "type": "string",
+      "values": ["personal", "mortgage", "auto"]
+    },
+    "isUrgent": {
+      "type": "boolean"
+    }
+  }
 }
