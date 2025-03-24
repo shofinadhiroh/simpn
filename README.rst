@@ -99,8 +99,6 @@ Usage
    setup_rework(shop, config)        # Configurable self-loop rework or other behaviors
    setup_long_rework(shop, config)   # Configurable long rework or other process modifications
 
-   In addition, case attributes (e.g., requestedAmount, loanType, isUrgent) will be generated when a case starts and included in the event log.
-
 3. **Run the Simulation with the Enhanced Reporter:**
 
    The simulation uses an enhanced reporter to log events along with the configured case attributes. Execute the simulation by running::
