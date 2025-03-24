@@ -4,7 +4,7 @@ SimPN Thesis Extension Project
 Overview
 --------
 
-This thesis project, by Shofiyyah Nadhiroh, extends the SimPN library to generate synthetic event logs for educational purposes. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as rework (self-loop and long rework), bottlenecks, and other modifications—to simulate realistic process scenarios.
+This thesis project, by Shofiyyah Nadhiroh, extends the SimPN library to generate synthetic event logs for educational purposes. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as rework (self-loop and long rework), bottlenecks, and other modifications—to simulate realistic process scenarios. In addition, the simulation now supports adding configurable case attributes (numerical, string, or boolean) to the event log.
 
 Getting Started
 ---------------
@@ -41,7 +41,7 @@ Installation
 Configuration
 ~~~~~~~~~~~~~
 
-The simulation uses ``config.json`` to control various process behaviors. For instance, you can specify conditions for rework or introduce bottlenecks by adjusting parameters in the configuration file:
+The simulation uses ``config.json`` to control various process behaviors and to configure case attributes that will be added to the event log. For example, you can specify conditions for rework or introduce bottlenecks, as well as define attributes (e.g., numerical, string, boolean) to be generated for each case:
 
 .. code-block:: json
 
@@ -60,7 +60,21 @@ The simulation uses ``config.json`` to control various process behaviors. For in
          "max_iteration": 1,
          "probability": 0.2
        }
-     ]
+     ],
+     "case_attributes": {
+       "requestedAmount": {
+         "type": "numerical",
+         "min": 1000,
+         "max": 10000
+       },
+       "loanType": {
+         "type": "string",
+         "values": ["personal", "mortgage", "auto"]
+       },
+       "isUrgent": {
+         "type": "boolean"
+       }
+     }
    }
 
 Usage
@@ -69,12 +83,12 @@ Usage
 1. **Model the Process:**
 
    Define your process using BPMN elements. See the ``test.py`` file for an example that includes:
-   
+
    - A start event to initialize the simulation.
    - Tasks such as ``review_application``, ``pre_approval_check``, and ``loan_approval``.
    - An end event to complete the process.
 
-2. **Configure Process Behaviors:**
+2. **Configure Process Behaviors and Case Attributes:**
 
    Load the configuration and set up behaviors using:
 
@@ -85,11 +99,11 @@ Usage
    setup_rework(shop, config)        # Configurable self-loop rework or other behaviors
    setup_long_rework(shop, config)   # Configurable long rework or other process modifications
 
-   The functions in ``rework.py`` dynamically add decision events to determine whether a token should re-enter a process step or proceed.
+   In addition, case attributes (e.g., requestedAmount, loanType, isUrgent) will be generated when a case starts and included in the event log.
 
-3. **Run the Simulation:**
+3. **Run the Simulation with the Enhanced Reporter:**
 
-   Execute the simulation by running::
+   The simulation uses an enhanced reporter to log events along with the configured case attributes. Execute the simulation by running::
 
       python test.py
 
@@ -97,5 +111,6 @@ Code Structure
 ~~~~~~~~~~~~~~
 
 - **test.py:** Main simulation code, including process definition and execution.
-- **config.json:** Configuration file for process behaviors.
+- **config.json:** Configuration file for process behaviors and case attributes.
 - **rework.py:** Implements functions (e.g., ``setup_rework`` and ``setup_long_rework``) to inject customizable process behaviors into the simulation.
+- **custom_reporters.py:** Contains the ``EnhancedEventLogReporter``, which logs events along with additional case attributes.
