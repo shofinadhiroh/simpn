@@ -1,0 +1,17 @@
+{
+  "rework": [
+    {
+      "activity": "review_application",
+      "max_iteration": 1,
+      "probability": 0.2
+    }
+  ],
+  "long_rework": [
+    {
+      "trigger_activity": "pre_approval_check",
+      "back_to": "review_application",
+      "max_iteration": 1,
+      "probability": 0.2
+    }
+  ]
+}
