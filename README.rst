@@ -173,7 +173,7 @@ To simulate rework, include one or both of the following:
    from custom_reporters import EnhancedEventLogReporter
 
    # Run the simulation with the enhanced reporter
-   reporter = EnhancedEventLogReporter("choice.csv", config=config)
+   reporter = EnhancedEventLogReporter("output.csv", config=config)
    loan_process.simulate(24*60, reporter)  # Simulate for 10 days (in minutes)
    reporter.close()
 
