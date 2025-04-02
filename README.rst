@@ -187,15 +187,16 @@ To simulate rework, include one or both of the following:
 Code Structure
 --------------
 
-+--------------------------+-----------------------------------------------------+
-| File                     | Description                                         |
-+==========================+=====================================================+
-| ``sequence.py``, etc.    | Simulation entry points with BPMN process models   |
-+--------------------------+-----------------------------------------------------+
-| ``config.json``          | Defines case attributes and rework behavior        |
-+--------------------------+-----------------------------------------------------+
-| ``rework.py``            | Implements ``setup_rework()`` and ``setup_long_rework()`` |
-+--------------------------+-----------------------------------------------------+
-| ``custom_reporters.py``  | Logs events and case data using EnhancedEventLogReporter |
-+--------------------------+-----------------------------------------------------+
++------------------------+-------------------------------------------------------------+
+| File                   | Description                                                 |
++========================+=============================================================+
+| ``sequence.py``, etc.  | Simulation entry points with BPMN process models            |
++------------------------+-------------------------------------------------------------+
+| ``config.json``        | Defines case attributes and rework behavior                 |
++------------------------+-------------------------------------------------------------+
+| ``rework.py``          | Implements ``setup_rework()`` and ``setup_long_rework()``   |
++------------------------+-------------------------------------------------------------+
+| ``custom_reporters.py``| Logs events and case data using EnhancedEventLogReporter    |
++------------------------+-------------------------------------------------------------+
+
 
