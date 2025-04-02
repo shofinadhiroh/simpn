@@ -4,35 +4,35 @@ SimPN Thesis Extension Project
 Overview
 --------
 
-This thesis project, developed by **Shofiyyah Nadhiroh**, extends the `SimPN`_ library to generate **synthetic event logs for educational purposes**. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as **rework (self-loop and long rework), bottlenecks, and case-specific attributes**—to simulate realistic process scenarios. The simulation now supports **conditional behaviors** and the generation of **case attributes** (numerical, string, or boolean) within the event log.
-
-.. _SimPN: https://github.com/bpogroup/simpn
+This thesis project, developed by **Shofiyyah Nadhiroh**, extends the `SimPN <https://github.com/bpogroup/simpn>`_ library to generate **synthetic event logs for educational purposes**. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as **rework (self-loop and long rework), bottlenecks, and case-specific attributes**—to simulate realistic process scenarios. The simulation now supports **conditional behaviors** and the generation of **case attributes** (numerical, string, or boolean) within the event log.
 
 Getting Started
 ---------------
 
-### Prerequisites
+Prerequisites
+~~~~~~~~~~~~~
 
 - Python 3.x  
-- `SimPN`_ (install via pip)  
+- `SimPN <https://github.com/bpogroup/simpn>`_ (install via pip)  
 - Other dependencies listed in ``requirements.txt``
 
-### Installation
+Installation
+~~~~~~~~~~~~
 
-1. **Install SimPN**
+1. Install SimPN:
 
    .. code-block:: bash
 
       pip install simpn
 
-2. **Clone this Repository**
+2. Clone this Repository:
 
    .. code-block:: bash
 
       git clone <repository-url>
       cd <repository-folder>
 
-3. **Install Dependencies**
+3. Install Dependencies:
 
    .. code-block:: bash
 
@@ -46,7 +46,8 @@ Simulation behavior is controlled through the ``config.json`` file. This include
 - Rework scenarios (with conditions)
 - Case attributes (numerical, string, or boolean)
 
-### Example ``config.json``
+Example ``config.json``
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: json
 
@@ -89,7 +90,8 @@ Usage
 
 You can either use one of the predefined execution files (**recommended for quick setup**) or configure your own custom simulation.
 
-### Option 1: Use a Predefined Execution File
+Option 1: Use a Predefined Execution File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Five example process scenarios are available:
 
@@ -107,11 +109,13 @@ Each file defines a different process structure. To run one, simply execute:
 
 You can modify the process behavior and attributes by editing ``config.json``.
 
-### Option 2: Configure Manually (Custom Setup)
+Option 2: Configure Manually (Custom Setup)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Follow these steps to build and simulate your own process from scratch.
 
-#### 1. Load Configuration and Generate Case Attributes
+1. Load Configuration and Generate Case Attributes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -139,7 +143,8 @@ Follow these steps to build and simulate your own process from scratch.
        # Token format: (attributes, rework_counts)
        return [SimToken((attributes, {}))]
 
-#### 2. Model the Process
+2. Model the Process
+^^^^^^^^^^^^^^^^^^^^
 
 Define your process using BPMN elements. You can refer to the ``test.py`` file for a full example. A typical process includes:
 
@@ -147,7 +152,8 @@ Define your process using BPMN elements. You can refer to the ``test.py`` file f
 - Tasks such as ``review_application``, ``pre_approval_check``, and ``loan_approval``.
 - An end event to complete the process.
 
-#### 3. Configure Rework (Optional)
+3. Configure Rework (Optional)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To simulate rework, include one or both of the following:
 
@@ -159,7 +165,8 @@ To simulate rework, include one or both of the following:
 - You may comment out any function you don't need.
 - These inject conditional rework behavior based on the ``config.json`` file.
 
-#### 4. Run the Simulation with the Enhanced Reporter
+4. Run the Simulation with the Enhanced Reporter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -170,17 +177,12 @@ To simulate rework, include one or both of the following:
    loan_process.simulate(24*60, reporter)  # Simulate for 10 days (in minutes)
    reporter.close()
 
-#### 5. Execute the File
+5. Execute the File
+^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
    python your_script.py
-
-The simulation will output a ``.csv`` event log containing:
-
-- Case attributes
-- Events
-- Rework traces (if configured)
 
 Code Structure
 --------------
@@ -197,13 +199,3 @@ Code Structure
 | ``custom_reporters.py``  | Logs events and case data using EnhancedEventLogReporter |
 +--------------------------+-----------------------------------------------------+
 
-Extras
-------
-
-Let me know if you'd like to:
-
-- Export the event log to ``.xes`` format
-- Visualize results in **Disco** or **ProM**
-- Generate sample event logs automatically for teaching or testing purposes
-
-Happy simulating! 🧪📊
