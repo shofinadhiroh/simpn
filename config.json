@@ -1,18 +1,31 @@
 {
   "rework": [
     {
-      "activity": "call",
+      "activity": "credit_check",
       "max_iteration": 1,
       "probability": 1,
       "condition": "loanType == 'personal'"
     }
   ],
+  "decision": {
+    "event_name": "choose_decision",
+    "normal": {
+      "positive_probability": 0.5,
+      "negative_probability": 0.5
+    },
+    "rework": {
+      "positive_probability": 0.0,
+      "negative_probability": 1.0
+    },
+    "positive_target": "application_approved",
+    "negative_target": "application_rejected"
+  },
   "long_rework": [
     {
       "trigger_activity": "credit_check",
       "back_to": "review_application",
       "max_iteration": 1,
-      "probability": 1,
+      "probability": 0.5,
       "condition": "loanType == 'personal'"
     }
   ],

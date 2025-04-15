@@ -45,13 +45,13 @@ def setup_rework(sim_problem: SimProblem, config: dict):
 
         # Define the decision behavior
         def decision_behavior(c):
-            # Unpack the token value; expected structure: (identifier, (attributes, rework_counts))
             identifier, (attributes, rework_counts) = c
             count = rework_counts.get(activity, 0)
             if safe_eval(condition, attributes) and count < max_iteration and uniform(0, 1) < probability:
                 # Rework: increment count and send token back to input queue
                 new_rework_counts = {**rework_counts, activity: count + 1}
-                new_token = (identifier, (attributes, new_rework_counts))
+                new_attributes = {**attributes, "has_rework": True}
+                new_token = (identifier, (new_attributes, new_rework_counts))
                 return [SimToken(new_token), None]
             # Proceed: normalize token by removing this activity's rework count before proceeding
             new_rework_counts = rework_counts.copy()
@@ -83,7 +83,7 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
         back_to_activity = long_rework_config["back_to"]
         max_iteration = long_rework_config["max_iteration"]
         probability = long_rework_config["probability"]
-        condition = long_rework_config.get("condition", "True")  # Default to True if no condition is specified
+        condition = long_rework_config.get("condition", "True")  # Default to True if no condition
 
         # Find prototypes for trigger and back-to activities
         trigger_prototype = next((p for p in sim_problem.prototypes if p.get_id() == trigger_activity), None)
@@ -114,8 +114,10 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
             identifier, (attributes, rework_counts) = c
             count = rework_counts.get(rework_key, 0)
             if safe_eval(condition, attributes) and count < max_iteration and uniform(0, 1) < probability:
+                # Rework: increment count and set has_rework to True
                 new_rework_counts = {**rework_counts, rework_key: count + 1}
-                new_token = (identifier, (attributes, new_rework_counts))
+                new_attributes = {**attributes, "has_rework": True}
+                new_token = (identifier, (new_attributes, new_rework_counts))
                 return [SimToken(new_token), None]
             # Proceed: normalize by removing the rework count for this long rework
             new_rework_counts = rework_counts.copy()
@@ -124,7 +126,7 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
             new_token = (identifier, (attributes, new_rework_counts))
             return [None, SimToken(new_token)]
 
-        # Add the long rework decision event only if it doesn't already exist
+        # Add the long rework decision event only if it doesn’t already exist
         event_name = f"long_rework_decision_event_{trigger_activity}_to_{back_to_activity}"
         if event_name in sim_problem.id2node:
             print(f"Event '{event_name}' already exists. Skipping addition.")

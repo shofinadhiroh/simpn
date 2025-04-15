@@ -1,6 +1,5 @@
 from simpn.simulator import SimProblem, SimToken
 from random import expovariate as exp, uniform, choice
-#from simpn.reporters import EventLogReporter
 from custom_reporters import EnhancedEventLogReporter
 from simpn.prototypes import BPMNStartEvent, BPMNTask, BPMNEndEvent
 import json
@@ -12,12 +11,12 @@ loan_process = SimProblem()
 
 # Define places (variables) for the process
 waiting = loan_process.add_var("waiting")           # Applications waiting to be reviewed.
-review_done = loan_process.add_var("review_done")     # Applications that have been reviewed.
-credit_done = loan_process.add_var("credit_done")     # Applications that have passed credit check.
+review_done = loan_process.add_var("review_done")   # Applications that have been reviewed.
+credit_done = loan_process.add_var("credit_done")   # Applications that have passed credit check.
 decision_approved = loan_process.add_var("decision_approved")
 decision_rejected = loan_process.add_var("decision_rejected")
 
-# Define resources.
+# Define resources
 loan_officer = loan_process.add_var("loan_officer")
 loan_officer.put("officer1")        # One loan officer for review.
 
@@ -61,12 +60,17 @@ BPMNTask(
     credit_check_start
 )
 
-# Choice Event: Decide whether to approve or reject (50% chance each)
+# Choice Event: Decide whether to approve or reject based on rework status
 def choose_decision(token):
-    if choice([True, False]):
-        return [SimToken(token), None]  # Approved branch.
+    identifier, (attributes, rework_counts) = token
+    if attributes.get("has_rework", False):
+        positive_prob = config["decision"]["rework"]["positive_probability"]
     else:
-        return [None, SimToken(token)]  # Rejected branch.
+        positive_prob = config["decision"]["normal"]["positive_probability"]
+    if uniform(0, 1) < positive_prob:
+        return [SimToken(token), None]  # Approved branch
+    else:
+        return [None, SimToken(token)]  # Rejected branch
 
 loan_process.add_event(
     [credit_done],
@@ -75,12 +79,13 @@ loan_process.add_event(
     name="choose_decision"
 )
 
-# End Events for the decision branches.
+# End Events for the decision branches
 BPMNEndEvent(loan_process, [decision_approved], [], "application_approved")
 BPMNEndEvent(loan_process, [decision_rejected], [], "application_rejected")
 
-#setup_rework(loan_process, config)
-setup_long_rework(loan_process, config)
+# Setup rework processes
+setup_rework(loan_process, config)  # Uncomment if rework section is added to config
+#setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 reporter = EnhancedEventLogReporter("choice.csv", config=config, sim_problem=loan_process)
