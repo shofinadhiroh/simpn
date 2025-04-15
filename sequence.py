@@ -1,9 +1,10 @@
 from simpn.simulator import SimProblem, SimToken
-from random import expovariate as exp, uniform, choice
+from random import expovariate as exp, uniform, choices
 from custom_reporters import EnhancedEventLogReporter
 from simpn.prototypes import BPMNStartEvent, BPMNTask, BPMNEndEvent
 import json
 from rework import setup_rework, setup_long_rework
+from case_attributes import start_behavior
 
 # Instantiate the simulation problem
 loan_process = SimProblem()
@@ -27,23 +28,6 @@ loan_manager.put("manager1")        # One loan manager for approval.
 # Load configuration first to use in start_behavior
 with open('config.json', 'r') as f:
     config = json.load(f)
-
-# Define start behavior to generate case attributes
-def start_behavior():
-    attributes = {}
-    for attr_name, attr_config in config.get("case_attributes", {}).items():
-        attr_type = attr_config["type"]
-        if attr_type == "numerical":
-            value = uniform(attr_config["min"], attr_config["max"])
-        elif attr_type == "string":
-            value = choice(attr_config["values"])
-        elif attr_type == "boolean":
-            value = choice([True, False])
-        else:
-            raise ValueError(f"Unsupported attribute type: {attr_type}")
-        attributes[attr_name] = value
-    # Token format: (attributes, rework_counts)
-    return [SimToken((attributes, {}))]
 
 # Start Event: Application Received
 BPMNStartEvent(

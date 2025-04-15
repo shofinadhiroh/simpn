@@ -1,7 +1,7 @@
 {
   "rework": [
     {
-      "activity": "assess_risk",
+      "activity": "call",
       "max_iteration": 1,
       "probability": 1,
       "condition": "loanType == 'personal'"
@@ -19,15 +19,34 @@
   "case_attributes": {
     "requestedAmount": {
       "type": "numerical",
-      "min": 1000,
-      "max": 10000
+      "distribution": {
+        "type": "bins",
+        "bins": [
+          {"range": [1000, 50000], "probability": 0.5},
+          {"range": [50001, 100000], "probability": 0.5}
+        ]
+      }
     },
     "loanType": {
       "type": "string",
-      "values": ["personal", "mortgage", "auto"]
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": "personal", "probability": 0.7},
+          {"value": "mortgage", "probability": 0.2},
+          {"value": "auto", "probability": 0.1}
+        ]
+      }
     },
     "isUrgent": {
-      "type": "boolean"
+      "type": "boolean",
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": true, "probability": 0.1},
+          {"value": false, "probability": 0.9}
+        ]
+      }
     }
   }
 }
