@@ -84,8 +84,8 @@ BPMNEndEvent(loan_process, [decision_approved], [], "application_approved")
 BPMNEndEvent(loan_process, [decision_rejected], [], "application_rejected")
 
 # Setup rework processes
-setup_rework(loan_process, config)  # Uncomment if rework section is added to config
-#setup_long_rework(loan_process, config)
+#setup_rework(loan_process, config)  # Uncomment if rework section is added to config
+setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 reporter = EnhancedEventLogReporter("choice.csv", config=config, sim_problem=loan_process)

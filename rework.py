@@ -77,6 +77,7 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
     """
     Sets up long rework where a token is sent back to an earlier activity.
     Uses conditions defined in config.json for dynamic behavior.
+    Modifies the decision event to enforce the path to trigger_activity after rework, if applicable.
     """
     for long_rework_config in config.get("long_rework", []):
         trigger_activity = long_rework_config["trigger_activity"]
@@ -92,8 +93,8 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
             raise ValueError(f"Activity not found: '{trigger_activity}' or '{back_to_activity}'")
 
         # Get the input queue of the back-to activity and the next place after trigger
-        back_to_input = back_to_prototype.incoming[0]
-        next_place = trigger_prototype.outgoing[0]
+        back_to_input = back_to_prototype.incoming[0]  # e.g., 'waiting' for 'review_application'
+        next_place = trigger_prototype.outgoing[0]      # e.g., 'credit_done' for 'credit_check'
 
         # Create a dynamic decision place
         decision_place_name = f"long_rework_decision_{trigger_activity}_to_{back_to_activity}"
@@ -114,17 +115,17 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
             identifier, (attributes, rework_counts) = c
             count = rework_counts.get(rework_key, 0)
             if safe_eval(condition, attributes) and count < max_iteration and uniform(0, 1) < probability:
-                # Rework: increment count and set has_rework to True
+                # Rework: increment count and set has_rework flag
                 new_rework_counts = {**rework_counts, rework_key: count + 1}
                 new_attributes = {**attributes, "has_rework": True}
                 new_token = (identifier, (new_attributes, new_rework_counts))
-                return [SimToken(new_token), None]
-            # Proceed: normalize by removing the rework count for this long rework
+                return [SimToken(new_token), None]  # Send back to back_to_input
+            # Proceed: keep attributes as is and remove rework count for this loop
             new_rework_counts = rework_counts.copy()
             if rework_key in new_rework_counts:
                 del new_rework_counts[rework_key]
             new_token = (identifier, (attributes, new_rework_counts))
-            return [None, SimToken(new_token)]
+            return [None, SimToken(new_token)]  # Send to next_place
 
         # Add the long rework decision event only if it doesn’t already exist
         event_name = f"long_rework_decision_event_{trigger_activity}_to_{back_to_activity}"
@@ -138,3 +139,31 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
                 name=event_name
             )
             print(f"Added event: {event_name}")
+
+        # Find the decision event after back_to_activity that includes trigger_activity's input as an output
+        decision_events = [
+            e for e in sim_problem.events
+            if back_to_prototype.outgoing[0] in e.incoming and trigger_prototype.incoming[0] in e.outgoing
+        ]
+        if decision_events:
+            if len(decision_events) == 1:
+                decision_event = decision_events[0]
+                original_behavior = decision_event.behavior
+
+                def new_behavior(token):
+                    identifier, (attributes, _) = token
+                    if attributes.get("has_rework", False):
+                        # Force the token to the output place leading to trigger_activity
+                        index = decision_event.outgoing.index(trigger_prototype.incoming[0])
+                        result = [None] * len(decision_event.outgoing)
+                        result[index] = SimToken(token)
+                        return result
+                    else:
+                        # Use the original random choice behavior
+                        return original_behavior(token)
+
+                decision_event.behavior = new_behavior
+            else:
+                print(f"Warning: Multiple decision events found for long rework from '{trigger_activity}' to '{back_to_activity}'. Skipping modification.")
+        else:
+            print(f"Info: No decision event found for long rework from '{trigger_activity}' to '{back_to_activity}'. Proceeding without modification.")
