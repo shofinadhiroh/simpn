@@ -1,6 +1,5 @@
 from simpn.simulator import SimProblem, SimToken
 from random import expovariate as exp, uniform, choice
-#from simpn.reporters import EventLogReporter
 from custom_reporters import EnhancedEventLogReporter
 from simpn.prototypes import BPMNStartEvent, BPMNTask, BPMNEndEvent
 import json
@@ -11,11 +10,11 @@ loan_process = SimProblem()
 
 # Define places (variables) for the process
 waiting = loan_process.add_var("waiting")           # Applications waiting to be reviewed.
-review_done = loan_process.add_var("review_done")     # Applications that have been reviewed.
-credit_done = loan_process.add_var("credit_done")     # Applications that have passed credit check.
+review_done = loan_process.add_var("review_done")   # Applications that have been reviewed.
+credit_done = loan_process.add_var("credit_done")   # Applications that have passed credit check.
 approved = loan_process.add_var("approved")    
 
-# Define resources.
+# Define resources
 loan_officer = loan_process.add_var("loan_officer")
 loan_officer.put("officer1")        # One loan officer for review.
 
@@ -93,11 +92,10 @@ BPMNTask(
 # End Event
 BPMNEndEvent(loan_process, [approved], [], "application_approved")
 
-setup_rework(loan_process, config)
+#setup_rework(loan_process, config)
 setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
-#reporter = EventLogReporter("sequence.csv")
-reporter = EnhancedEventLogReporter("sequence.csv", config=config)
+reporter = EnhancedEventLogReporter("sequence.csv", config=config, sim_problem=loan_process)
 loan_process.simulate(24*60, reporter)  # 10 days in minutes
 reporter.close()

@@ -156,6 +156,6 @@ setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 #reporter = EventLogReporter("mix.csv")
-reporter = EnhancedEventLogReporter("mix.csv", config=config)
+reporter = EnhancedEventLogReporter("mix.csv", config=config, sim_problem=loan_process)
 loan_process.simulate(24*60, reporter)  # 10 days in minutes
 reporter.close()

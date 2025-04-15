@@ -147,11 +147,11 @@ BPMNTask(
 # End Event
 BPMNEndEvent(loan_process, [approved], [], "application_approved")
 
-setup_rework(loan_process, config)
+#setup_rework(loan_process, config)
 setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 #reporter = EventLogReporter("parallel.csv")
-reporter = EnhancedEventLogReporter("parallel.csv", config=config)
+reporter = EnhancedEventLogReporter("parallel.csv", config=config, sim_problem=loan_process)
 loan_process.simulate(24*60, reporter)  # 10 days in minutes
 reporter.close()

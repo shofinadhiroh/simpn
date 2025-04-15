@@ -122,11 +122,11 @@ BPMNTask(
 # End Event: Application Approved (formerly inform_decision)
 BPMNEndEvent(loan_process, [decision_informed], [], "application_approved")
 
-setup_rework(loan_process, config)
+#setup_rework(loan_process, config)
 setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 #reporter = EventLogReporter("choice2.csv")
-reporter = EnhancedEventLogReporter("choice2.csv", config=config)
+reporter = EnhancedEventLogReporter("choice2.csv", config=config, sim_problem=loan_process)
 loan_process.simulate(24*60, reporter)  # 10 days in minutes
 reporter.close()

@@ -23,6 +23,7 @@ loan_officer.put("officer1")        # One loan officer for review.
 credit_analyst = loan_process.add_var("credit_analyst")
 credit_analyst.put("analyst1")      # One credit analyst for credit check.
 
+# Load configuration first to use in start_behavior
 with open('config.json', 'r') as f:
     config = json.load(f)
 
@@ -94,11 +95,10 @@ loan_process.add_event(
 BPMNEndEvent(loan_process, [decision_approved], [], "application_approved")
 BPMNEndEvent(loan_process, [decision_rejected], [], "application_rejected")
 
-setup_rework(loan_process, config)
+#setup_rework(loan_process, config)
 setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
-#reporter = EventLogReporter("choice.csv")
-reporter = EnhancedEventLogReporter("choice.csv", config=config)
+reporter = EnhancedEventLogReporter("choice.csv", config=config, sim_problem=loan_process)
 loan_process.simulate(24*60, reporter)  # 10 days in minutes
 reporter.close()
