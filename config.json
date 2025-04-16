@@ -4,6 +4,7 @@
       "activity": "credit_check",
       "max_iteration": 1,
       "probability": 1,
+      "resource": "analyst2",
       "condition": "loanType == 'personal'"
     }
   ],
@@ -25,7 +26,8 @@
       "trigger_activity": "credit_check",
       "back_to": "review_application",
       "max_iteration": 1,
-      "probability": 0.5,
+      "probability": 1,
+      "resource": "analyst2",
       "condition": "loanType == 'personal'"
     }
   ],

@@ -21,6 +21,7 @@ loan_officer.put("officer1")        # One loan officer for review.
 
 credit_analyst = loan_process.add_var("credit_analyst")
 credit_analyst.put("analyst1")      # One credit analyst for credit check.
+credit_analyst.put("analyst2")  
 
 loan_manager = loan_process.add_var("loan_manager")
 loan_manager.put("manager1")        # One loan manager for approval.

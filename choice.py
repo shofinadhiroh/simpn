@@ -22,6 +22,7 @@ loan_officer.put("officer1")        # One loan officer for review.
 
 credit_analyst = loan_process.add_var("credit_analyst")
 credit_analyst.put("analyst1")      # One credit analyst for credit check.
+credit_analyst.put("analyst2")  
 
 # Load configuration first to use in start_behavior
 with open('config.json', 'r') as f:
