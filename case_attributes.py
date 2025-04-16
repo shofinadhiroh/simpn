@@ -1,12 +1,16 @@
-from simpn.simulator import SimToken
+from simpn.simulator import SimToken, SimProblem
 from random import uniform, choices
 import json
+from datetime import datetime, timedelta
 
 # Load configuration
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-def start_behavior():
+# Define the initial simulation start time
+INITIAL_TIME = datetime(2020, 1, 1, 0, 0, 0)
+
+def start_behavior(sim_problem):
     """
     Generates case attributes based on distribution configurations in config.json.
     Returns a SimToken containing the attributes and an empty rework_counts dictionary.
@@ -46,5 +50,8 @@ def start_behavior():
         else:
             raise ValueError(f"Unsupported distribution type '{dist_type}' for attribute '{attr_name}'")
 
+    # Add the start time as a datetime
+    start_time = INITIAL_TIME + timedelta(minutes=sim_problem.clock)
+    attributes["start_time"] = start_time
     # Token format: (attributes, rework_counts)
     return [SimToken((attributes, {}))]

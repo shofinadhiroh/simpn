@@ -5,7 +5,7 @@
       "max_iteration": 1,
       "probability": 1,
       "resource": "analyst2",
-      "condition": "loanType == 'personal'"
+      "condition": "loanType == 'personal' and start_time >= datetime(2020, 1, 2) and start_time <= datetime(2020, 1, 3)"
     }
   ],
   "decision": {

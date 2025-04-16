@@ -1,13 +1,17 @@
 from random import uniform
 from simpn.simulator import SimProblem, SimToken
 from typing import Dict
+from datetime import datetime
 
 def safe_eval(condition: str, attributes: Dict) -> bool:
     """
     Safely evaluate the condition string using attributes.
     """
     try:
-        return eval(condition, {"__builtins__": {}}, attributes)
+        # Include datetime in the evaluation environment
+        env = {"__builtins__": {}, "datetime": datetime}
+        env.update(attributes)
+        return eval(condition, env)
     except Exception:
         return False
 

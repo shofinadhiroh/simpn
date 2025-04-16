@@ -37,7 +37,7 @@ BPMNStartEvent(
     [waiting],     # New application token goes into the waiting queue.
     "application_received",
     lambda: exp(1/20),
-    behavior=start_behavior
+    behavior=lambda: start_behavior(loan_process)
 )
 
 # Task: Review Application
@@ -77,10 +77,10 @@ BPMNTask(
 # End Event
 BPMNEndEvent(loan_process, [approved], [], "application_approved")
 
-#setup_rework(loan_process, config)
-setup_long_rework(loan_process, config)
+setup_rework(loan_process, config)
+#setup_long_rework(loan_process, config)
 
 # Run the simulation with the enhanced reporter
 reporter = EnhancedEventLogReporter("sequence.csv", config=config, sim_problem=loan_process)
-loan_process.simulate(24*60, reporter)  # 10 days in minutes
+loan_process.simulate(24*60*10, reporter)  # 10 days in minutes
 reporter.close()

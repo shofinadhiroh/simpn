@@ -52,7 +52,7 @@ BPMNStartEvent(
     [waiting],     # New application token goes into the waiting queue.
     "application_received",
     lambda: exp(1/20),
-    behavior=start_behavior
+    behavior=lambda: start_behavior(loan_process)
 )
 
 # Task: Review Application
