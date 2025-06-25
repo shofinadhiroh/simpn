@@ -9,6 +9,7 @@ The project introduces **configurable process behaviors** that simulate realisti
 - **Bottlenecks**: time-based resource shortages and optimal resource calculation
 - **Case Attributes**: generation of per-case metadata (e.g., loan type, amount, urgency)
 - **Resource Constraints**: control which resources may execute specific tasks
+- **Task Scheduling Constraints**: restrict tasks to run only on certain weekdays or days of the month
 
 All simulation outputs are stored in enriched CSV logs
 
@@ -23,7 +24,7 @@ Project Structure
    │   ├── config.json       # Sample configuration for case attributes
    │   └── README.rst
    │
-   ├── bottleneck/       # Bottleneck simulation: resource shortages, constraints
+   ├── bottleneck/       # Bottleneck simulation: resource shortages, constraints, time gating
    │   ├── resource_calculator.py
    │   ├── bottleneck_manager.py
    │   ├── resource_constraints.py
