@@ -49,7 +49,7 @@ Quick Start
 3. **Write** a driver script that:
 
    - Imports the modules you need (``attr``, ``rework``, ``bottleneck``)
-   - Defines the BPMN process using ``BPMNStartEvent``, ``BPMNTask``, etc.
+   - Defines the BPMN process using ``BPMNStartEvent``, ``BPMNTask``, etc. You can copy the model from the template folder or create your own from scratch.
    - Calls one or more configuration functions:
      ``setup_rework(...)``, ``adjust_bottlenecks(...)``, or ``apply_resource_constraints(...)``
    - Uses ``EnhancedEventLogReporter`` to capture enriched logs
