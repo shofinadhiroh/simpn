@@ -1,0 +1,81 @@
+{
+  "bottlenecks": {
+    "type": "resource_shortage",
+    "where": [
+      {
+        "task": "approve_application",
+        "periods": [
+          {
+            "start_date":          "2020-12-24",
+            "end_date":            "2020-12-26",
+            "resources_to_remove": ["m1", "m2", "m3"]
+          }
+        ]
+      }
+    ]
+  },
+  "resource_constraints": [
+    {
+      "task": "pre_approval_check",
+      "conditions": [
+        {
+          "condition": "loanType == 'personal'",
+          "resources": ["s1"]
+        }
+      ]
+    },
+    {
+      "task": "approve_application",
+      "conditions": [
+        {
+          "condition": "loanType == 'personal'",
+          "resources": ["m1"]
+        }
+      ]
+    }
+  ],
+  "task_constraints": {
+    "pre_approval_check": {
+      "type": "day_of_week",
+      "days": ["Thursday"]
+    },
+    "approve_application": {
+      "type": "date_range",
+      "start_day": 5,
+      "end_day": 10
+    }
+  },
+  "case_attributes": {
+    "requestedAmount": {
+      "type": "numerical",
+      "distribution": {
+        "type": "bins",
+        "bins": [
+          {"range": [1000, 50000], "probability": 0.5},
+          {"range": [50001, 100000], "probability": 0.5}
+        ]
+      }
+    },
+    "loanType": {
+      "type": "string",
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": "personal", "probability": 0.7},
+          {"value": "mortgage", "probability": 0.2},
+          {"value": "auto", "probability": 0.1}
+        ]
+      }
+    },
+    "isUrgent": {
+      "type": "boolean",
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": true, "probability": 0.1},
+          {"value": false, "probability": 0.9}
+        ]
+      }
+    }
+  }
+}

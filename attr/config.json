@@ -1,0 +1,35 @@
+{
+  "case_attributes": {
+    "requestedAmount": {
+      "type": "numerical",
+      "distribution": {
+        "type": "bins",
+        "bins": [
+          {"range": [1000, 50000], "probability": 0.5},
+          {"range": [50001, 100000], "probability": 0.5}
+        ]
+      }
+    },
+    "loanType": {
+      "type": "string",
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": "personal", "probability": 0.7},
+          {"value": "mortgage", "probability": 0.2},
+          {"value": "auto", "probability": 0.1}
+        ]
+      }
+    },
+    "isUrgent": {
+      "type": "boolean",
+      "distribution": {
+        "type": "discrete",
+        "values": [
+          {"value": true, "probability": 0.1},
+          {"value": false, "probability": 0.9}
+        ]
+      }
+    }
+  }
+}
