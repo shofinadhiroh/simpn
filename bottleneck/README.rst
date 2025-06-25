@@ -6,6 +6,7 @@ The ``bottleneck`` package helps you identify, adjust, and simulate resource-bas
 - **Optimal Resource Calculation**: find under-resourced activities
 - **Time-Based Shortages**: temporarily remove staff/machines (e.g., holidays)
 - **Resource Constraints**: restrict which resources may work on a task
+- **Task Scheduling Constraints**: restrict tasks to run only on specific days or date ranges
 
 Modules
 -------
@@ -13,6 +14,7 @@ Modules
 - ``resource_calculator.calculate_optimal_resources``
 - ``bottleneck_manager.adjust_bottlenecks``
 - ``resource_constraints.apply_resource_constraints``
+- ``task_constraints.apply_task_constraints``
 
 1. Calculate Optimal Resources
 ------------------------------
@@ -81,5 +83,35 @@ In your script:
    from bottleneck.resource_constraints import apply_resource_constraints
 
    apply_resource_constraints(agency, config)
+
+4. Apply Task Scheduling Constraints
+------------------------------------
+
+Use this when tasks should only run on specific weekdays or date ranges.
+
+In ``config.json``:
+
+.. code-block:: json
+
+   "task_constraints": {
+     "pre_approval_check": {
+       "type": "day_of_week",
+       "days": ["Thursday"]
+     },
+     "approve_application": {
+       "type": "date_range",
+       "start_day": 5,
+       "end_day": 10
+     }
+   }
+
+In your script:
+
+.. code-block:: python
+
+   from bottleneck.task_constraints import apply_task_constraints
+
+   apply_task_constraints(agency, config)
+This simulates time-based gating. Tasks will queue until a valid execution date, which can induce bottlenecks if not managed.
 
 Run your simulation as usual. The logs and console output will reflect the bottleneck behavior you have configured.
