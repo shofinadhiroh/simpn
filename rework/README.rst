@@ -64,7 +64,7 @@ Usage
       
 4. **Activate rework**::
        
-       setup_rework(loan_process,      config)
+       setup_rework(loan_process, config)
        setup_long_rework(loan_process, config)
 
 5. **Activate rework**::
