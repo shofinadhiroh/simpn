@@ -1,12 +1,10 @@
-SimPN
-=====
+SimPN Thesis Extension Project
+==============================
 
-SimPN is a Python library for BPMN‐style process simulation, with first‐class support for:
+Overview
+--------
 
-  - Enriching event logs with custom case attributes  
-  - Modeling rework loops (self and long)  
-  - Calculating and simulating resource bottlenecks  
-  - Providing reusable templates for common workflow patterns  
+This thesis project, developed by **Shofiyyah Nadhiroh**, extends the `SimPN <https://github.com/bpogroup/simpn>`_ library to generate **synthetic event logs for educational purposes**. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as **rework (self-loop and long rework), bottlenecks, and case-specific attributes**—to simulate realistic process scenarios. The simulation now supports **conditional behaviors** and the generation of **case attributes** (numerical, string, or boolean) within the event log.
 
 Project Structure
 -----------------
