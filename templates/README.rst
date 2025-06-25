@@ -7,7 +7,7 @@ The ``templates`` folder contains ready‐made BPMN process definitions to help 
   A simple linear workflow: Task A → Task B → Task C.
 
 - **parallel.py**  
-  A fork/join pattern where multiple tasks run concurrently.
+  A join pattern where multiple tasks run concurrently.
 
 - **choice.py**  
   An exclusive decision gateway with configurable branch probabilities.
