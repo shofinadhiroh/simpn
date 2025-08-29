@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Overview
 --------
 
@@ -12,6 +13,15 @@ The project introduces **configurable process behaviors** that simulate realisti
 - **Task Scheduling Constraints**: restrict tasks to run only on certain weekdays or days of the month
 
 All simulation outputs are stored in enriched CSV logs
+=======
+SimPN Thesis Extension Project
+==============================
+
+Overview
+--------
+
+This thesis project, developed by **Shofiyyah Nadhiroh**, extends the `SimPN <https://github.com/bpogroup/simpn>`_ library to generate **synthetic event logs for educational purposes**. It demonstrates advanced process modeling using BPMN elements and introduces configurable process behaviors—such as **rework (self-loop and long rework), bottlenecks, and case-specific attributes**—to simulate realistic process scenarios. The simulation now supports **conditional behaviors** and the generation of **case attributes** (numerical, string, or boolean) within the event log.
+>>>>>>> 5fe2f23 (update reporters, resource calculator)
 
 Project Structure
 -----------------
