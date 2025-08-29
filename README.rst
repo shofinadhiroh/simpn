@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Overview
 --------
 
@@ -74,3 +73,4 @@ Quick Start
 5. **Analyze** the generated ``sequence.csv`` or any output CSV file for deeper process insights.
 
 For detailed instructions, see each sub-folder’s ``README.rst``.
+
