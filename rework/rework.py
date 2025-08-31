@@ -1,6 +1,6 @@
 from random import uniform
 from simpn.simulator import SimProblem, SimToken
-from typing import Dict
+from typing import Dict, Optional
 from datetime import datetime
 
 def safe_eval(condition: str, attributes: Dict) -> bool:
@@ -189,3 +189,120 @@ def setup_long_rework(sim_problem: SimProblem, config: dict):
                     return result
                 return original_behavior(token)
             decision_event.behavior = new_behavior
+
+def _find_prototype(sim_problem: SimProblem, activity_id: str):
+    return next((p for p in sim_problem.prototypes if p.get_id() == activity_id), None)
+
+def _must(condition: bool, msg: str):
+    if not condition:
+        raise ValueError(msg)
+
+def setup_rework_impact(sim_problem: SimProblem, config: dict):
+    """
+    Make a decision event's behavior depend on whether the case had rework.
+    The decision config must be present in config["decision"].
+
+    Behavior:
+      - If attributes.get("has_rework") is true: use the "rework" probabilities.
+      - Otherwise: use the "normal" probabilities.
+
+    This function will:
+      - Locate the decision event by its name.
+      - Optionally rewire the event's two outgoing arcs to the provided end-event targets.
+      - Replace the event behavior to apply rework-aware probabilities.
+    """
+    # -------- Read and validate config --------
+    dcfg = config.get("decision")
+    _must(dcfg is not None, "Missing 'decision' in config.json.")
+
+    event_name = dcfg.get("event_name")
+    _must(isinstance(event_name, str) and event_name.strip(),
+          "decision.event_name must be a non-empty string.")
+
+    normal = dcfg.get("normal", {})
+    rework = dcfg.get("rework", {})
+
+    def _prob_pair(block: dict, label: str):
+        try:
+            pp = float(block["positive_probability"])
+            np = float(block["negative_probability"])
+        except Exception:
+            raise ValueError(
+                f"decision.{label} must contain numeric 'positive_probability' and "
+                f"'negative_probability'. Example: {{'positive_probability': 0.5, 'negative_probability': 0.5}}"
+            )
+        _must(0.0 <= pp <= 1.0 and 0.0 <= np <= 1.0, f"decision.{label} probabilities must be in [0,1].")
+        # Do not force exact sum to 1 to allow tiny rounding; normalize if slightly off.
+        s = pp + np
+        _must(s > 0.0, f"decision.{label} probabilities must not both be zero.")
+        return (pp / s, np / s)
+
+    normal_p = _prob_pair(normal, "normal")
+    rework_p = _prob_pair(rework, "rework")
+
+    pos_target = dcfg.get("positive_target")
+    neg_target = dcfg.get("negative_target")
+
+    # -------- Find the decision event node --------
+    node = sim_problem.id2node.get(event_name)
+    _must(node is not None, f"Decision event '{event_name}' not found in the model. "
+                            f"Ensure you created the split event with name='{event_name}'.")
+
+    _must(hasattr(node, "incoming") and hasattr(node, "outgoing"),
+          f"Node '{event_name}' is not an event with flows.")
+
+    _must(len(node.outgoing) == 2,
+          f"Decision event '{event_name}' must have exactly two outgoing arcs. "
+          f"Found {len(node.outgoing)}.")
+
+    # -------- Optionally rewire to match targets --------
+    # If targets are provided, locate their incoming places and set them as outflows in order [positive, negative].
+    if pos_target and neg_target:
+        pos_proto = _find_prototype(sim_problem, pos_target)
+        neg_proto = _find_prototype(sim_problem, neg_target)
+        _must(pos_proto is not None, f"Positive target end activity '{pos_target}' not found.")
+        _must(neg_proto is not None, f"Negative target end activity '{neg_target}' not found.")
+
+        _must(len(pos_proto.incoming) == 1, f"'{pos_target}' must have exactly one incoming place.")
+        _must(len(neg_proto.incoming) == 1, f"'{neg_target}' must have exactly one incoming place.")
+
+        pos_place = pos_proto.incoming[0]
+        neg_place = neg_proto.incoming[0]
+
+        # Keep existing incoming places as-is. Only set the two outgoing places.
+        try:
+            node.set_outflow([pos_place, neg_place])
+        except Exception as e:
+            raise ValueError(
+                f"Failed to set outflows for '{event_name}'. "
+                f"Check that the targets are reachable. Details: {e}"
+            )
+
+    # -------- Replace behavior with rework-aware logic --------
+    original_outgoing = list(node.outgoing)  # after optional rewiring
+
+    def _rework_aware_choice(token):
+        # token content is expected to be (case_id, (attributes_dict, rework_counts_dict))
+        try:
+            identifier, payload = token
+            attributes, rework_counts = payload
+        except Exception:
+            # Be permissive and default to no rework if the shape is unexpected
+            attributes = {}
+        has_rework = bool((attributes or {}).get("has_rework", False))
+
+        if has_rework:
+            pos_prob = normal_p[0] if rework_p is None else rework_p[0]
+            # Using rework_p already; above line is safety but rework_p always exists
+            pos_prob = rework_p[0]
+        else:
+            pos_prob = normal_p[0]
+
+        if uniform(0.0, 1.0) < pos_prob:
+            # Send to first outgoing (positive)
+            return [SimToken(token), None]
+        else:
+            # Send to second outgoing (negative)
+            return [None, SimToken(token)]
+
+    node.behavior = _rework_aware_choice
